@@ -70,6 +70,7 @@ public class LoginPanel extends JPanel {
         loginButton.addActionListener(mainWindow);
     }
 
+    @SuppressWarnings("deprecation")
     public int checkUsernameAndPassword() {
         if (loginPassword.getText().equals("admin") && loginUserName.getText().equals("admin")) {
             return 1;

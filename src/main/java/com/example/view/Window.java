@@ -66,26 +66,19 @@ public class Window extends JFrame implements ActionListener {
                 break;
 
             case "searchUserButton":
-                System.out.println("userButton");
-                String keyword = adminPanel.getUserKeyword();
-                System.out.println(keyword);
-                adminPanel.setUserTable(controller.getUsers(keyword));
+                String userKeyword = adminPanel.getUserKeyword();
+                adminPanel.setUserTable(controller.getUsers(userKeyword));
                 break;
 
             case "searchBookButton":
-                System.out.println("bookButton");
+                String bookKeyword = adminPanel.getBookKeyword();
+                adminPanel.setBookTable(controller.getBooks(bookKeyword));
                 break;
 
             default:
                 System.out.println("Unknown button pressed");
                 break;
         }
-        // if(e.getClass() instanceof JButton)
-        // System.out.println("ButtonPressed");
-        // if (loginPanel.checkUsernameAndPassword()) {
-        //     CardLayout cl = (CardLayout) mainPanel.getLayout();
-        //     cl.show(mainPanel, "adminPanel");
-        // }
     }
 
 }

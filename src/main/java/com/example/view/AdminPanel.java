@@ -1,11 +1,19 @@
 package com.example.view;
 
-import java.awt.*;
+import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.util.List;
 
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.table.AbstractTableModel;
 
+import com.example.model.Book;
 import com.example.model.Person;
 
 public class AdminPanel extends JPanel {
@@ -64,9 +72,8 @@ public class AdminPanel extends JPanel {
         searchUserTable.setFillsViewportHeight(true);
 
         Dimension d = searchUserTable.getPreferredSize();
-        searchUserPane.setPreferredSize(
-            new Dimension(d.width*2, searchUserTable.getRowHeight()*20+1));
-        
+        searchUserPane.setPreferredSize(new Dimension(d.width * 2, searchUserTable.getRowHeight() * 20 + 1));
+
         usersPanel.add(searchUserField);
         usersPanel.add(searchUserButton);
         usersPanel.add(searchUserPane);
@@ -108,8 +115,7 @@ public class AdminPanel extends JPanel {
         searchBookTable.setFillsViewportHeight(true);
 
         Dimension d = searchBookTable.getPreferredSize();
-        searchBookPane.setPreferredSize(
-            new Dimension(d.width*2, searchBookTable.getRowHeight()*20+1));
+        searchBookPane.setPreferredSize(new Dimension(d.width * 2, searchBookTable.getRowHeight() * 20 + 1));
 
         booksPanel.add(searchBookField);
         booksPanel.add(searchBookButton);
@@ -130,16 +136,17 @@ public class AdminPanel extends JPanel {
     public String getUserKeyword() {
         return searchUserField.getText();
     }
-    
+
     public String getBookKeyword() {
         return searchBookField.getText();
     }
 
     public void setUserTable(List<Person> pList) {
         PersonTableModel model = (PersonTableModel) searchUserTable.getModel();
-
-        for(int i = 0; i < pList.size(); i++) {
-            System.out.println(pList.get(i).getId()  + " " + pList.get(i).getFirstName()+ " " + pList.get(i).getLastName());
+        model.setColumnNumber(pList.size()); // possible better way??/
+        for (int i = 0; i < pList.size(); i++) {
+            // System.out.println(
+            //         pList.get(i).getId() + " " + pList.get(i).getFirstName() + " " + pList.get(i).getLastName());
             model.setValueAt(pList.get(i).getId(), i, 0);
             model.setValueAt(pList.get(i).getFirstName(), i, 1);
             model.setValueAt(pList.get(i).getLastName(), i, 2);
@@ -147,24 +154,31 @@ public class AdminPanel extends JPanel {
         model.fireTableDataChanged();
     }
 
+    public void setBookTable(List<Book> bList) {
+        BookTableModel model = (BookTableModel) searchBookTable.getModel();
+        model.setColumnNumber(bList.size());
+        for(int i = 0; i < bList.size(); i++) {
+            model.setValueAt(bList.get(i).getISBN(), i, 0);
+            model.setValueAt(bList.get(i).getTitle(), i, 1);
+            model.setValueAt(bList.get(i).getAuthor(), i, 2);;
+        }
+        model.fireTableDataChanged();
+    }
 }
-
-
-
-
-
-
-
-
-
 
 class PersonTableModel extends AbstractTableModel {
     private String[] columnNames = { "ID", "First Name", "Last Name" };
-    private Object[][] data = {{'a','b','c'},{'a','b','c'},{'a','b','c'}};
+    private Object[][] data = { { 'a', 'b', 'c' }, { 'a', 'b', 'c' }, { 'a', 'b', 'c' } };
 
     @Override
     public int getRowCount() {
         return data.length;
+    }
+
+    public void setColumnNumber(int size) {
+        if (data.length != size) {
+            data = new Object[size][3];
+        }
     }
 
     @Override
@@ -177,7 +191,6 @@ class PersonTableModel extends AbstractTableModel {
         return columnNames[column];
 
     }
-
 
     @Override
     public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
@@ -190,6 +203,7 @@ class PersonTableModel extends AbstractTableModel {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Class getColumnClass(int c) {
         return getValueAt(0, c).getClass();
     }
@@ -198,9 +212,17 @@ class PersonTableModel extends AbstractTableModel {
     public boolean isCellEditable(int rowIndex, int columnIndex) {
         return false;
     }
+
+    @Override
+    public void fireTableDataChanged() {
+        super.fireTableDataChanged();
+    }
+
+    @Override
+    public void fireTableRowsInserted(int firstRow, int lastRow) {
+        super.fireTableRowsInserted(firstRow, lastRow);
+    }
 }
-
-
 
 class BookTableModel extends AbstractTableModel {
     private String[] columnNames = { "ISBN", "Title", "Author" };
@@ -209,6 +231,12 @@ class BookTableModel extends AbstractTableModel {
     @Override
     public int getRowCount() {
         return data.length;
+    }
+
+    public void setColumnNumber(int size) {
+        if (data.length != size) {
+            data = new Object[size][3];
+        }
     }
 
     @Override
@@ -223,11 +251,17 @@ class BookTableModel extends AbstractTableModel {
     }
 
     @Override
+    public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+        data[rowIndex][columnIndex] = aValue;
+    }
+
+    @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
         return data[rowIndex][columnIndex];
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Class getColumnClass(int c) {
         return getValueAt(0, c).getClass();
     }

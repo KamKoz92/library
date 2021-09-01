@@ -14,6 +14,7 @@ import com.example.view.Window;
 
 public class App 
 {
+    
     public static void main( String[] args )
     {
         // List<Person> personList = null;
@@ -25,6 +26,7 @@ public class App
         // }
         DatabaseInterface db = new DerbyDatabase();
         Controller controller = new Controller(db);
+        
         Window window = new Window("LibManagment", controller);
     }
 }

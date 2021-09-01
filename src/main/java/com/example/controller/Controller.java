@@ -2,6 +2,7 @@ package com.example.controller;
 
 import java.util.List;
 
+import com.example.model.Book;
 import com.example.model.DatabaseInterface;
 import com.example.model.Person;
 
@@ -14,9 +15,11 @@ public class Controller {
     }
 
     public List<Person> getUsers(String keyword) {
-        List<Person> personList = null;
-        personList = db.getPersonList();
-        return personList;
+        return db.getPersonList(keyword);
+    }
+
+    public List<Book> getBooks(String keyword) {
+        return db.getBookList(keyword);
     }
     
 }
