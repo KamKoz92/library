@@ -1,24 +1,23 @@
 package com.example.view;
 
 import java.awt.Dimension;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.GridBagConstraints;
 import java.util.List;
+import java.awt.event.*;
 
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
+import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
+
 
 import com.example.model.Book;
 import com.example.model.Person;
 
-public class AdminPanel extends JPanel {
-    private JPanel buttonsPanel, usersPanel, booksPanel, updatePanel;
+public class AdminPanel extends JPanel implements ActionListener {
+    private JPanel infoPanel, usersPanel, booksPanel, updatePanel;
     private JButton logoutButton, exitButton;
 
     private JButton searchUserButton;
@@ -39,26 +38,117 @@ public class AdminPanel extends JPanel {
     public AdminPanel() {
         this.setLayout(new GridLayout(2, 2));
         this.setBorder(BorderFactory.createTitledBorder("Admin Panel"));
-        setButtonsPanel();
-        setBookPanel();
-        setUpdatePanel();
+        setInfoPanel();
         setUsersPanel();
+        setUpdatePanel();
+        setBookPanel();
     }
 
-    private void setButtonsPanel() {
 
-        buttonsPanel = new JPanel();
-        buttonsPanel.setBorder(BorderFactory.createTitledBorder("Control"));
+    private JTextField fName, lName, id;
+    private JTable infoTable;
+    private JScrollPane infoPane;
+
+    private void setInfoPanel() {
+
+        infoPanel = new JPanel(new GridBagLayout());
+        infoPanel.setBorder(BorderFactory.createTitledBorder("Info"));
         logoutButton = new JButton("Logout");
         logoutButton.setName("logout");
         exitButton = new JButton("Exit");
         exitButton.setName("exit");
+        fName = new JTextField(10);
+        lName = new JTextField(10);
+        id = new JTextField(10);
+        fName.setEditable(false);
+        lName.setEditable(false);
+        id.setEditable(false);
 
-        buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.Y_AXIS));
-        buttonsPanel.add(logoutButton);
-        buttonsPanel.add(exitButton);
+        GridBagConstraints c = new GridBagConstraints();
+    
+        c.anchor = GridBagConstraints.LINE_START;
+        c.fill = GridBagConstraints.BOTH;
+        c.weightx = 0.5;
+        c.gridx = 0;
+        c.gridy = 0;
+        infoPanel.add(logoutButton,c);
 
-        this.add(buttonsPanel);
+        c.weightx = 0.5;
+        c.anchor = GridBagConstraints.CENTER;
+        c.fill = GridBagConstraints.BOTH;
+        c.gridx = 0;
+        c.gridy = 1;
+        infoPanel.add(exitButton,c);
+
+        c.anchor = GridBagConstraints.CENTER;
+        c.fill = GridBagConstraints.NONE;
+        c.weightx = 1;
+        c.gridx = 1;
+        c.gridy = 0;
+        c.gridheight = 1;
+        c.gridwidth = 1;
+        infoPanel.add(new JLabel("ID"),c);
+
+        
+        c.anchor = GridBagConstraints.CENTER;
+        c.fill = GridBagConstraints.BOTH;
+        c.weightx = 1;
+        c.gridx = 1;
+        c.gridy = 1;
+        c.gridheight = 1;
+        c.gridwidth = 1;
+        infoPanel.add(id,c);
+
+        c.anchor = GridBagConstraints.CENTER;
+        c.fill = GridBagConstraints.NONE;
+        c.weightx = 1;
+        c.gridx = 2;
+        c.gridy = 0;
+        c.gridheight = 1;
+        c.gridwidth = 1;
+        infoPanel.add(new JLabel("First Name"),c);
+
+        c.anchor = GridBagConstraints.CENTER;
+        c.fill = GridBagConstraints.BOTH;
+        c.weightx = 1;
+        c.gridx = 2;
+        c.gridy = 1;
+        c.gridheight = 1;
+        c.gridwidth = 1;
+        infoPanel.add(fName,c);
+
+        c.anchor = GridBagConstraints.CENTER;
+        c.fill = GridBagConstraints.NONE;
+        c.weightx = 1;
+        c.gridx = 3;
+        c.gridy = 0;
+        c.gridheight = 1;
+        c.gridwidth = 1;
+        infoPanel.add(new JLabel("Last Name"),c);
+
+        c.anchor = GridBagConstraints.CENTER;
+        c.fill = GridBagConstraints.BOTH;
+        c.weightx = 1;
+        c.gridx = 3;
+        c.gridy = 1;
+        c.gridheight = 1;
+        c.gridwidth = 1;
+        infoPanel.add(lName,c);
+
+        infoTable = new JTable(new BooksInfoTableModel());
+        infoTable.setFillsViewportHeight(true);
+        infoPane = new JScrollPane(infoTable);
+        Dimension d = infoTable.getPreferredSize();
+        infoPane.setPreferredSize(new Dimension(d.width, infoTable.getRowHeight() * 20 + 1));
+        infoTable.getTableHeader().setReorderingAllowed(false);
+        c.anchor = GridBagConstraints.CENTER;
+        c.fill = GridBagConstraints.BOTH;
+        c.gridx = 0;
+        c.gridy = 2;
+        c.gridwidth = 4;        
+        infoPanel.add(infoPane,c);
+
+        this.add(infoPanel);
     }
 
     private void setUsersPanel() {
@@ -83,7 +173,14 @@ public class AdminPanel extends JPanel {
         usersPanel.add(searchUserComboBox);
         usersPanel.add(searchUserButton);
         usersPanel.add(searchUserPane);
-
+        searchUserTable.getSelectionModel().addListSelectionListener(new ListSelectionListener(){
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                id.setText(searchUserTable.getValueAt(searchUserTable.getSelectedRow(), 0).toString());
+                fName.setText(searchUserTable.getValueAt(searchUserTable.getSelectedRow(), 1).toString());
+                lName.setText(searchUserTable.getValueAt(searchUserTable.getSelectedRow(), 2).toString());
+            }
+        });
         this.add(usersPanel);
     }
 
@@ -175,16 +272,69 @@ public class AdminPanel extends JPanel {
     }
 
     public int getUserSearchType() {
-        return searchBookComboBox.getSelectedIndex();
+        return searchUserComboBox.getSelectedIndex();
     }
 
     public int getBookSearchType() {
         return searchBookComboBox.getSelectedIndex();
     }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        // TODO Auto-generated method stub
+        
+    }
 }
 
 class PersonTableModel extends AbstractTableModel {
     private String[] columnNames = { "ID", "First Name", "Last Name" };
+    private Object[][] data = {};
+
+    @Override
+    public int getRowCount() {
+        return data.length;
+    }
+
+    public void setColumnNumber(int size) {
+        if (data.length != size) {
+            data = new Object[size][3];
+        }
+    }
+
+    @Override
+    public int getColumnCount() {
+        return columnNames.length;
+    }
+
+    @Override
+    public String getColumnName(int column) {
+        return columnNames[column];
+    }
+
+    @Override
+    public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+        data[rowIndex][columnIndex] = aValue;
+    }
+
+    @Override
+    public Object getValueAt(int rowIndex, int columnIndex) {
+        return data[rowIndex][columnIndex];
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public Class getColumnClass(int c) {
+        return getValueAt(0, c).getClass();
+    }
+
+    @Override
+    public boolean isCellEditable(int rowIndex, int columnIndex) {
+        return false;
+    }
+}
+
+class BookTableModel extends AbstractTableModel {
+    private String[] columnNames = { "ISBN", "Title", "Author"};
     private Object[][] data = {};
 
     @Override
@@ -229,20 +379,10 @@ class PersonTableModel extends AbstractTableModel {
     public boolean isCellEditable(int rowIndex, int columnIndex) {
         return false;
     }
-
-    @Override
-    public void fireTableDataChanged() {
-        super.fireTableDataChanged();
-    }
-
-    @Override
-    public void fireTableRowsInserted(int firstRow, int lastRow) {
-        super.fireTableRowsInserted(firstRow, lastRow);
-    }
 }
 
-class BookTableModel extends AbstractTableModel {
-    private String[] columnNames = { "ISBN", "Title", "Author" };
+class BooksInfoTableModel extends AbstractTableModel {
+    private String[] columnNames = { "ISBN", "Title", "Author","Borrow Date","Return Date"};
     private Object[][] data = {};
 
     @Override
@@ -252,7 +392,7 @@ class BookTableModel extends AbstractTableModel {
 
     public void setColumnNumber(int size) {
         if (data.length != size) {
-            data = new Object[size][3];
+            data = new Object[size][5];
         }
     }
 

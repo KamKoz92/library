@@ -30,7 +30,6 @@ public class Window extends JFrame implements ActionListener {
         cl.show(mainPanel, "adminPanel");
         setListeners();
         frame.getContentPane().add(mainPanel);
-
         frame.setVisible(true);
     }
 
@@ -65,14 +64,12 @@ public class Window extends JFrame implements ActionListener {
             case "searchUserButton":
                 String userKeyword = adminPanel.getUserKeyword();
                 int userSearchType = adminPanel.getUserSearchType();
-                System.out.println(userSearchType);
                 adminPanel.setUserTable(controller.getUsers(userKeyword,userSearchType));
                 break;
 
             case "searchBookButton":
                 String bookKeyword = adminPanel.getBookKeyword();
                 int bookSearchType = adminPanel.getBookSearchType();
-                System.out.println(bookSearchType);
                 adminPanel.setBookTable(controller.getBooks(bookKeyword,bookSearchType));
                 break;
 
