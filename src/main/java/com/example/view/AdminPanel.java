@@ -7,6 +7,7 @@ import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -18,13 +19,13 @@ import com.example.model.Person;
 
 public class AdminPanel extends JPanel {
     private JPanel buttonsPanel, usersPanel, booksPanel, updatePanel;
-
     private JButton logoutButton, exitButton;
 
     private JButton searchUserButton;
     private JTextField searchUserField;
     private JScrollPane searchUserPane;
     private JTable searchUserTable;
+    private JComboBox<String> searchUserComboBox;
 
     private JButton addEntryButton, deleteEntryButton;
     private JTextField addEntryField, deleteEntryField;
@@ -33,14 +34,15 @@ public class AdminPanel extends JPanel {
     private JTextField searchBookField;
     private JScrollPane searchBookPane;
     private JTable searchBookTable;
+    private JComboBox<String> searchBookComboBox;
 
     public AdminPanel() {
         this.setLayout(new GridLayout(2, 2));
         this.setBorder(BorderFactory.createTitledBorder("Admin Panel"));
         setButtonsPanel();
-        setUsersPanel();
-        setUpdatePanel();
         setBookPanel();
+        setUpdatePanel();
+        setUsersPanel();
     }
 
     private void setButtonsPanel() {
@@ -66,6 +68,8 @@ public class AdminPanel extends JPanel {
         searchUserField = new JTextField(15);
         searchUserButton = new JButton("Search");
         searchUserButton.setName("searchUserButton");
+        String [] cb = {"ID","First Name","Last Name"};
+        searchUserComboBox = new JComboBox<String>(cb);
 
         searchUserTable = new JTable(new PersonTableModel());
         searchUserPane = new JScrollPane(searchUserTable);
@@ -73,8 +77,10 @@ public class AdminPanel extends JPanel {
 
         Dimension d = searchUserTable.getPreferredSize();
         searchUserPane.setPreferredSize(new Dimension(d.width * 2, searchUserTable.getRowHeight() * 20 + 1));
+        searchUserTable.getTableHeader().setReorderingAllowed(false);
 
         usersPanel.add(searchUserField);
+        usersPanel.add(searchUserComboBox);
         usersPanel.add(searchUserButton);
         usersPanel.add(searchUserPane);
 
@@ -109,6 +115,8 @@ public class AdminPanel extends JPanel {
         searchBookField = new JTextField(15);
         searchBookButton = new JButton("Search");
         searchBookButton.setName("searchBookButton");
+        String [] cb = {"ISBN","Title","Author"};
+        searchBookComboBox = new JComboBox<String>(cb);
 
         searchBookTable = new JTable(new BookTableModel());
         searchBookPane = new JScrollPane(searchBookTable);
@@ -116,8 +124,10 @@ public class AdminPanel extends JPanel {
 
         Dimension d = searchBookTable.getPreferredSize();
         searchBookPane.setPreferredSize(new Dimension(d.width * 2, searchBookTable.getRowHeight() * 20 + 1));
+        searchBookTable.getTableHeader().setReorderingAllowed(false);
 
         booksPanel.add(searchBookField);
+        booksPanel.add(searchBookComboBox);
         booksPanel.add(searchBookButton);
         booksPanel.add(searchBookPane);
 
@@ -143,10 +153,8 @@ public class AdminPanel extends JPanel {
 
     public void setUserTable(List<Person> pList) {
         PersonTableModel model = (PersonTableModel) searchUserTable.getModel();
-        model.setColumnNumber(pList.size()); // possible better way??/
+        model.setColumnNumber(pList.size());
         for (int i = 0; i < pList.size(); i++) {
-            // System.out.println(
-            //         pList.get(i).getId() + " " + pList.get(i).getFirstName() + " " + pList.get(i).getLastName());
             model.setValueAt(pList.get(i).getId(), i, 0);
             model.setValueAt(pList.get(i).getFirstName(), i, 1);
             model.setValueAt(pList.get(i).getLastName(), i, 2);
@@ -157,18 +165,27 @@ public class AdminPanel extends JPanel {
     public void setBookTable(List<Book> bList) {
         BookTableModel model = (BookTableModel) searchBookTable.getModel();
         model.setColumnNumber(bList.size());
-        for(int i = 0; i < bList.size(); i++) {
+        for (int i = 0; i < bList.size(); i++) {
             model.setValueAt(bList.get(i).getISBN(), i, 0);
             model.setValueAt(bList.get(i).getTitle(), i, 1);
-            model.setValueAt(bList.get(i).getAuthor(), i, 2);;
+            model.setValueAt(bList.get(i).getAuthor(), i, 2);
+            ;
         }
         model.fireTableDataChanged();
+    }
+
+    public int getUserSearchType() {
+        return searchBookComboBox.getSelectedIndex();
+    }
+
+    public int getBookSearchType() {
+        return searchBookComboBox.getSelectedIndex();
     }
 }
 
 class PersonTableModel extends AbstractTableModel {
     private String[] columnNames = { "ID", "First Name", "Last Name" };
-    private Object[][] data = { { 'a', 'b', 'c' }, { 'a', 'b', 'c' }, { 'a', 'b', 'c' } };
+    private Object[][] data = {};
 
     @Override
     public int getRowCount() {

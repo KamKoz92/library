@@ -45,7 +45,6 @@ public class Window extends JFrame implements ActionListener {
         CardLayout cl = (CardLayout) mainPanel.getLayout();
         switch (buttonName) {
             case "login":
-                System.out.println("loginButton");
                 if (loginPanel.checkUsernameAndPassword() == 1) {
                         cl.show(mainPanel, "adminPanel");
                         loginPanel.clearFields();
@@ -56,23 +55,25 @@ public class Window extends JFrame implements ActionListener {
                 break;
 
             case "logout":
-                System.out.println("logoutButton");
                 cl.show(mainPanel, "loginPanel");
                 break;
 
             case "exit":
-                System.out.println("exitButton");
                 System.exit(1);
                 break;
 
             case "searchUserButton":
                 String userKeyword = adminPanel.getUserKeyword();
-                adminPanel.setUserTable(controller.getUsers(userKeyword));
+                int userSearchType = adminPanel.getUserSearchType();
+                System.out.println(userSearchType);
+                adminPanel.setUserTable(controller.getUsers(userKeyword,userSearchType));
                 break;
 
             case "searchBookButton":
                 String bookKeyword = adminPanel.getBookKeyword();
-                adminPanel.setBookTable(controller.getBooks(bookKeyword));
+                int bookSearchType = adminPanel.getBookSearchType();
+                System.out.println(bookSearchType);
+                adminPanel.setBookTable(controller.getBooks(bookKeyword,bookSearchType));
                 break;
 
             default:

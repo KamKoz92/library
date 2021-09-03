@@ -14,12 +14,12 @@ public class Controller {
         this.db = db;
     }
 
-    public List<Person> getUsers(String keyword) {
-        return db.getPersonList(keyword);
+    public List<Person> getUsers(String keyword, int searchType) {
+        return db.getPersonList(keyword, searchType);
     }
 
-    public List<Book> getBooks(String keyword) {
-        return db.getBookList(keyword);
+    public List<Book> getBooks(String keyword, int searchType) {
+        return db.getBookList(keyword, searchType);
     }
     
 }
